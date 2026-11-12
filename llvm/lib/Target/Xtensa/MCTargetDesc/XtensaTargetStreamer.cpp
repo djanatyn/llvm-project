@@ -90,6 +90,8 @@ void XtensaTargetELFStreamer::emitLiteral(MCSymbol *LblSym, const MCExpr *Value,
 
     MCSection *ConstSection = Context.getELFSection(
         SectionName, ELF::SHT_PROGBITS, ELF::SHF_EXECINSTR | ELF::SHF_ALLOC);
+    // l32r can only load from a 4-byte aligned address.
+    ConstSection->setAlignment(Align(4));
 
     OutStreamer.pushSection();
     OutStreamer.switchSection(ConstSection);
@@ -112,6 +114,10 @@ void XtensaTargetELFStreamer::startLiteralSection(MCSection *BaseSection) {
       SectionName, ELF::SHT_PROGBITS, ELF::SHF_EXECINSTR | ELF::SHF_ALLOC);
 
   ConstSection->setAlignment(Align(4));
+  // Switch to the literal section here; otherwise literals emitted by
+  // emitConstantPool are appended inline to the current section, which for
+  // a text section is not guaranteed to leave the pool 4-byte aligned.
+  getStreamer().switchSection(ConstSection);
 }
 
 MCELFStreamer &XtensaTargetELFStreamer::getStreamer() {

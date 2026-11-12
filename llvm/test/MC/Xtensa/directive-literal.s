@@ -21,6 +21,7 @@ test_literal:
 
 # CHECK-LITERAL: Section {
 # CHECK-LITERAL:   Name: .literal
+# CHECK-LITERAL:   AddressAlignment: 4
 # CHECK-LITERAL:   SectionData (
 # CHECK-LITERAL:     0000: 78563412 00000000 30750000
 # CHECK-LITERAL:   )
